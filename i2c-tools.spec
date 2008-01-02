@@ -8,6 +8,7 @@ URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
 Conflicts:      lm_sensors < 3.0.0
 Requires:       udev
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 This package contains a heterogeneous set of I2C tools for Linux: a bus
