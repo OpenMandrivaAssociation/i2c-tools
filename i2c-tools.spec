@@ -1,11 +1,12 @@
 Name:           i2c-tools
-Version:        3.0.0
+Version:        3.0.1
 Release:        %mkrel 1
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
 URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
+Source1:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2.sig
 Conflicts:      lm_sensors < 3.0.0
 Requires:       udev
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
