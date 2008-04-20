@@ -58,17 +58,19 @@ cd eepromer
 %exclude %{_sbindir}/eeprom
 %exclude %{_sbindir}/eepromer
 %attr(0755,root,root) %{_bindir}/ddcmon
-%attr(0755,root,root) %{_bindir}/decode-dimms.pl
-%attr(0755,root,root) %{_bindir}/decode-edid.pl
-%attr(0755,root,root) %{_bindir}/decode-vaio.pl
+%attr(0755,root,root) %{_bindir}/decode-dimms
+%attr(0755,root,root) %{_bindir}/decode-edid
+%attr(0755,root,root) %{_bindir}/decode-vaio
 %attr(0755,root,root) %{_sbindir}/i2cdetect
 %attr(0755,root,root) %{_sbindir}/i2cdump
 %attr(0755,root,root) %{_sbindir}/i2cget
 %attr(0755,root,root) %{_sbindir}/i2cset
+%attr(0755,root,root) %{_sbindir}/i2c-stub-from-dump
 %{_mandir}/man8/i2cdetect.8*
 %{_mandir}/man8/i2cdump.8*
 %{_mandir}/man8/i2cget.8*
 %{_mandir}/man8/i2cset.8*
+%{_mandir}/man8/i2c-stub-from-dump.8*
 
 %files eepromer
 %defattr(0644,root,root,0755)
