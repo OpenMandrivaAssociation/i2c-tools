@@ -1,6 +1,6 @@
 Name:           i2c-tools
 Version:        3.0.1
-Release:        %mkrel 2
+Release:        %mkrel 3
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
@@ -48,10 +48,10 @@ cd eepromer
 %files
 %defattr(0644,root,root,0755)
 %doc CHANGES COPYING README
-%attr(660,root,root) %dev(c,89,0) /%{_lib}/udev/devices/i2c-0
-%attr(660,root,root) %dev(c,89,0) /%{_lib}/udev/devices/i2c-1
-%attr(660,root,root) %dev(c,89,0) /%{_lib}/udev/devices/i2c-2
-%attr(660,root,root) %dev(c,89,0) /%{_lib}/udev/devices/i2c-3
+%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-0
+%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-1
+%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-2
+%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-3
 #%attr(0755,root,root) %{_bindir}/*
 #%attr(0755,root,root) %{_sbindir}/*
 %exclude %{_sbindir}/eeprog
