@@ -1,13 +1,16 @@
 Name:           i2c-tools
 Version:        3.0.1
-Release:        %mkrel 3
+Release:        %mkrel 4
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
 URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
 Source1:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2.sig
+# py-smbus has to #include i2c.h as well as i2c-dev.h - AdamW 2008/11
+Patch0:		i2c-tools-3.0.1-pysmbus_include.patch
 Conflicts:      lm_sensors < 3.0.0
+BuildRequires:	kernel-headers
 Requires:       udev
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -27,19 +30,39 @@ eeproms in your system is very dangerous and is likely to render your system
 unusable. Do not install, let alone use this, unless you really, _really_ know
 what you are doing.
 
+%package -n python-smbus
+Summary:	Python module for SMBus access via I2C
+Group:		System/Kernel and hardware
+
+%description -n python-smbus
+This Python module allows SMBus access through the I2C /dev interface
+on Linux hosts. The host kernel must have I2C support, I2C device
+interface support, and a bus adapter driver. 
+
 %prep
 %setup -q 
+%patch0 -p1 -b .headers
 
 %build
 %{make} CFLAGS="%{optflags}"
 
-cd eepromer
+pushd eepromer
 %{make} CFLAGS="%{optflags} -I../include"
+popd
+
+pushd py-smbus
+CFLAGS="%{optflags}" python setup.py build
+popd
 
 %install
 %{__rm} -rf %{buildroot}
 %{makeinstall}
 %{__cp} -a eepromer/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
+
+pushd py-smbus
+python setup.py install --root=%{buildroot} --compile --optimize=2
+popd
+
 %{__rm} -r %{buildroot}%{_includedir}/linux
 
 %clean
@@ -78,4 +101,9 @@ cd eepromer
 %attr(0755,root,root) %{_sbindir}/eeprog
 %attr(0755,root,root) %{_sbindir}/eeprom
 %attr(0755,root,root) %{_sbindir}/eepromer
+
+%files -n python-smbus
+%defattr(0644,root,root,0755)
+%doc py-smbus/README
+%{py_platsitedir}/smbus*
 
