@@ -35,6 +35,7 @@ Group:		System/Kernel and hardware
 BuildRequires:	python
 BuildRequires:	python-setuptools
 BuildRequires:	kernel-headers
+Requires:	python
 
 %description -n python-smbus
 This Python module allows SMBus access through the I2C /dev interface
