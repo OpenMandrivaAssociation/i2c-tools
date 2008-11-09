@@ -10,7 +10,6 @@ Source1:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}
 # py-smbus has to #include i2c.h as well as i2c-dev.h - AdamW 2008/11
 Patch0:		i2c-tools-3.0.1-pysmbus_include.patch
 Conflicts:      lm_sensors < 3.0.0
-BuildRequires:	kernel-headers
 Requires:       udev
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -33,6 +32,9 @@ what you are doing.
 %package -n python-smbus
 Summary:	Python module for SMBus access via I2C
 Group:		System/Kernel and hardware
+BuildRequires:	python
+BuildRequires:	python-setuptools
+BuildRequires:	kernel-headers
 
 %description -n python-smbus
 This Python module allows SMBus access through the I2C /dev interface
