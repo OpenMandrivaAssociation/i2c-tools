@@ -7,8 +7,6 @@ License:        GPL
 URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
 Source1:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2.sig
-# py-smbus has to #include i2c.h as well as i2c-dev.h - AdamW 2008/11
-Patch0:		i2c-tools-3.0.1-pysmbus_include.patch
 Conflicts:      lm_sensors < 3.0.0
 Requires:       udev
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -34,7 +32,6 @@ Summary:	Python module for SMBus access via I2C
 Group:		System/Kernel and hardware
 BuildRequires:	python
 BuildRequires:	python-setuptools
-BuildRequires:	kernel-headers
 Requires:	python
 
 %description -n python-smbus
@@ -44,7 +41,6 @@ interface support, and a bus adapter driver.
 
 %prep
 %setup -q 
-%patch0 -p1 -b .headers
 
 %build
 %{make} CFLAGS="%{optflags}"
@@ -54,7 +50,7 @@ pushd eepromer
 popd
 
 pushd py-smbus
-CFLAGS="%{optflags}" python setup.py build
+CFLAGS="%{optflags} -I../include" python setup.py build
 popd
 
 %install
