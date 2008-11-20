@@ -1,6 +1,6 @@
 Name:           i2c-tools
 Version:        3.0.1
-Release:        %mkrel 4
+Release:        %mkrel 5
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
