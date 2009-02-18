@@ -1,12 +1,11 @@
 Name:           i2c-tools
-Version:        3.0.1
-Release:        %mkrel 6
+Version:        3.0.2
+Release:        %mkrel 1
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
 URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
-Source1:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2.sig
 Conflicts:      lm_sensors < 3.0.0
 Requires:       udev
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -37,10 +36,10 @@ Requires:	python
 %description -n python-smbus
 This Python module allows SMBus access through the I2C /dev interface
 on Linux hosts. The host kernel must have I2C support, I2C device
-interface support, and a bus adapter driver. 
+interface support, and a bus adapter driver.
 
 %prep
-%setup -q 
+%setup -q
 
 %build
 %{make} CFLAGS="%{optflags}"
