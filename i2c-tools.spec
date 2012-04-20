@@ -1,6 +1,6 @@
 Name:           i2c-tools
-Version:        3.0.3
-Release:        %mkrel 1
+Version:        3.1.0
+Release:        1
 Summary:        Heterogeneous set of I2C tools for Linux
 Group:          System/Kernel and hardware
 License:        GPL
@@ -8,7 +8,6 @@ URL:            http://www.lm-sensors.org/wiki/I2CTools
 Source0:        http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
 Conflicts:      lm_sensors < 3.0.0
 Requires:       udev
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 %description
 This package contains a heterogeneous set of I2C tools for Linux: a bus
@@ -63,9 +62,6 @@ popd
 
 %{__rm} -r %{buildroot}%{_includedir}/linux
 
-%clean
-%{__rm} -rf %{buildroot}
-
 %files
 %defattr(0644,root,root,0755)
 %doc CHANGES COPYING README
@@ -104,4 +100,3 @@ popd
 %defattr(0644,root,root,0755)
 %doc py-smbus/README
 %{py_platsitedir}/smbus*
-
