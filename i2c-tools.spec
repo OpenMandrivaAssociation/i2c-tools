@@ -84,6 +84,8 @@ rm -r %{buildroot}%{_includedir}/linux
 %attr(0755,root,root) %{_sbindir}/i2cget
 %attr(0755,root,root) %{_sbindir}/i2cset
 %attr(0755,root,root) %{_sbindir}/i2c-stub-from-dump
+%{_mandir}/man1/decode-dimms.1.*
+%{_mandir}/man1/decode-vaio.1.*
 %{_mandir}/man8/i2cdetect.8*
 %{_mandir}/man8/i2cdump.8*
 %{_mandir}/man8/i2cget.8*
