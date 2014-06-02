@@ -54,7 +54,7 @@ CFLAGS="%{optflags} -I../include" python setup.py build
 popd
 
 %install
-%makeinstall_std
+%makeinstall
 cp -a eepromer/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
 
 pushd py-smbus
