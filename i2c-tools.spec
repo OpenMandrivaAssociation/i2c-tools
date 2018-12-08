@@ -1,11 +1,11 @@
 %define major 0
 %define libname %mklibname i2c %{major}
 %define devname %mklibname -d i2c
-%define staticname %mklibname -d -s
+%define staticname %mklibname -d -s i2c
 
 Name:		i2c-tools
 Version:	4.1
-Release:	0.1
+Release:	0.2
 Summary:	Heterogeneous set of I2C tools for Linux
 Group:		System/Kernel and hardware
 License:	GPL
