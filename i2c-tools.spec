@@ -82,7 +82,7 @@ CFLAGS="%{optflags} -I../include" python setup.py build
 popd
 
 %install
-%makeinstall PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
+%makeinstall_std PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
 cp -a eeprog/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
 
 pushd py-smbus
