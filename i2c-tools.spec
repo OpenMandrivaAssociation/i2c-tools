@@ -5,7 +5,7 @@
 
 Name:		i2c-tools
 Version:	4.1
-Release:	1
+Release:	0.1
 Summary:	Heterogeneous set of I2C tools for Linux
 Group:		System/Kernel and hardware
 License:	GPL
@@ -82,7 +82,7 @@ CFLAGS="%{optflags} -I../include" python setup.py build
 popd
 
 %install
-%make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
+%makeinstall PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
 cp -a eeprog/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
 
 pushd py-smbus
