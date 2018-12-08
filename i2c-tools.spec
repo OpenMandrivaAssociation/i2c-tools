@@ -1,11 +1,16 @@
+%define major 0
+%define libname %mklibname i2c %{major}
+%define devname %mklibname -d i2c
+%define staticname %mklibname -d -s
+
 Name:		i2c-tools
-Version:	3.1.1
-Release:	2
+Version:	4.1
+Release:	1
 Summary:	Heterogeneous set of I2C tools for Linux
 Group:		System/Kernel and hardware
 License:	GPL
 URL:		http://www.lm-sensors.org/wiki/I2CTools
-Source0:	http://dl.lm-sensors.org/i2c-tools/releases/i2c-tools-%{version}.tar.bz2
+Source0:	https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/i2c-tools-%{version}.tar.xz
 Conflicts:	lm_sensors < 3.0.0
 Requires:	udev
 
@@ -14,8 +19,31 @@ This package contains a heterogeneous set of I2C tools for Linux: a bus
 probing tool, a chip dumper, register-level access helpers, EEPROM
 decoding scripts, and more.
 
+%package -n %{libname}
+Summary:	Library for working with I2C bus devices
+Group:		System/Libraries
+
+%description -n %{libname}
+Library for working with I2C bus devices
+
+%package -n %{devname}
+Summary:	Development files for the I2C library
+Group:		System/Kernel and hardware
+Requires:	%{libname} = %{EVRD}
+
+%description -n %{devname}
+Development files for the I2C library
+
+%package -n %{staticname}
+Summary:	Static library files for the I2C library
+Group:		System/Kernel and hardware
+Requires:	%{devname} = %{EVRD}
+
+%description -n %{staticname}
+Static library files for the I2C library
+
 %package eepromer
-Summary:	rograms for reading/writing i2c/smbus eeproms
+Summary:	Programs for reading/writing i2c/smbus eeproms
 Group:		System/Kernel and hardware
 Requires:	%{name} = %{version}-%{release}
 
@@ -43,10 +71,10 @@ interface support, and a bus adapter driver.
 %build
 %setup_compile_flags
 
-%make
+%make PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir}
 
 pushd eepromer
-%make CFLAGS="%{optflags} -I../include"
+%make PREFIX=%{_prefix} libdir=%{_libdir} CFLAGS="%{optflags} -I../include"
 popd
 
 pushd py-smbus
@@ -54,14 +82,12 @@ CFLAGS="%{optflags} -I../include" python setup.py build
 popd
 
 %install
-%makeinstall
-cp -a eepromer/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
+%make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
+cp -a eeprog/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
 
 pushd py-smbus
 python setup.py install --root=%{buildroot} --compile --optimize=2
 popd
-
-rm -r %{buildroot}%{_includedir}/linux
 
 %files
 %defattr(0644,root,root,0755)
@@ -83,6 +109,7 @@ rm -r %{buildroot}%{_includedir}/linux
 %attr(0755,root,root) %{_sbindir}/i2cdump
 %attr(0755,root,root) %{_sbindir}/i2cget
 %attr(0755,root,root) %{_sbindir}/i2cset
+%attr(0755,root,root) %{_sbindir}/i2ctransfer
 %attr(0755,root,root) %{_sbindir}/i2c-stub-from-dump
 %{_mandir}/man1/decode-dimms.1.*
 %{_mandir}/man1/decode-vaio.1.*
@@ -90,17 +117,28 @@ rm -r %{buildroot}%{_includedir}/linux
 %{_mandir}/man8/i2cdump.8*
 %{_mandir}/man8/i2cget.8*
 %{_mandir}/man8/i2cset.8*
+%{_mandir}/man8/i2ctransfer.8*
 %{_mandir}/man8/i2c-stub-from-dump.8*
 
 %files eepromer
 %defattr(0644,root,root,0755)
-%doc eepromer/README eepromer/README.eeprom eepromer/README.eepromer eepromer/README.eeprog
+%doc eepromer/README eepromer/README.eeprom eepromer/README.eepromer
 %attr(0755,root,root) %{_sbindir}/eeprog
 %attr(0755,root,root) %{_sbindir}/eeprom
 %attr(0755,root,root) %{_sbindir}/eepromer
+%{_mandir}/man8/eeprog.8*
 
 %files -n python-smbus
 %defattr(0644,root,root,0755)
 %doc py-smbus/README
 %{py_platsitedir}/smbus*
 
+%files -n %{libname}
+%{_libdir}/libi2c.so.%{major}*
+
+%files -n %{devname}
+%{_includedir}/i2c
+%{_libdir}/*.so
+
+%files -n %{staticname}
+%{_libdir}/*.a
