@@ -98,8 +98,6 @@ cd ..
 %attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-1
 %attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-2
 %attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-3
-#%attr(0755,root,root) %{_bindir}/*
-#%attr(0755,root,root) %{_sbindir}/*
 %exclude %{_sbindir}/eeprog
 %exclude %{_sbindir}/eeprom
 %exclude %{_sbindir}/eepromer
@@ -115,6 +113,7 @@ cd ..
 %attr(0755,root,root) %{_sbindir}/i2c-stub-from-dump
 %{_mandir}/man1/decode-dimms.1.*
 %{_mandir}/man1/decode-vaio.1.*
+%{_mandir}/man3/libi2c.3.*
 %{_mandir}/man8/i2cdetect.8*
 %{_mandir}/man8/i2cdump.8*
 %{_mandir}/man8/i2cget.8*
