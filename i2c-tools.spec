@@ -3,10 +3,10 @@
 %define devname %mklibname -d i2c
 %define staticname %mklibname -d -s i2c
 
-Name:		i2c-tools
-Version:	4.1
-Release:	3
 Summary:	Heterogeneous set of I2C tools for Linux
+Name:		i2c-tools
+Version:	4.2
+Release:	1
 Group:		System/Kernel and hardware
 License:	GPL
 URL:		http://www.lm-sensors.org/wiki/I2CTools
@@ -66,28 +66,28 @@ on Linux hosts. The host kernel must have I2C support, I2C device
 interface support, and a bus adapter driver.
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
-%setup_compile_flags
+%set_build_flags
 
-%make PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir}
+%make_build PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir} CC=%{__cc}
 
-pushd eepromer
-%make PREFIX=%{_prefix} libdir=%{_libdir} CFLAGS="%{optflags} -I../include"
-popd
+cd eepromer
+%make_build PREFIX=%{_prefix} libdir=%{_libdir} CFLAGS="%{optflags} -I../include" CC=%{__cc}
+cd ..
 
-pushd py-smbus
+cd py-smbus
 CFLAGS="%{optflags} -I../include" python setup.py build
-popd
+cd ..
 
 %install
 %make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
 cp -a eeprog/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
 
-pushd py-smbus
+cd py-smbus
 python setup.py install --root=%{buildroot} --compile --optimize=2
-popd
+cd ..
 
 %files
 %defattr(0644,root,root,0755)
