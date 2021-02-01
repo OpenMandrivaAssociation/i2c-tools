@@ -11,6 +11,7 @@ Group:		System/Kernel and hardware
 License:	GPL
 URL:		http://www.lm-sensors.org/wiki/I2CTools
 Source0:	https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/i2c-tools-%{version}.tar.xz
+BuildRequires:	pkgconfig(python)
 Conflicts:	lm_sensors < 3.0.0
 Requires:	udev
 
