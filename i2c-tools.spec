@@ -2,6 +2,7 @@
 %define libname %mklibname i2c %{major}
 %define devname %mklibname -d i2c
 %define staticname %mklibname -d -s i2c
+%define _disable_ld_no_undefined 1
 
 Summary:	Heterogeneous set of I2C tools for Linux
 Name:		i2c-tools
