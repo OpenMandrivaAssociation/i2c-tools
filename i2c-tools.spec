@@ -6,7 +6,7 @@
 
 Summary:	Heterogeneous set of I2C tools for Linux
 Name:		i2c-tools
-Version:	4.2
+Version:	4.3
 Release:	1
 Group:		System/Kernel and hardware
 License:	GPL
@@ -15,6 +15,8 @@ Source0:	https://mirrors.edge.kernel.org/pub/software/utils/i2c-tools/i2c-tools-
 BuildRequires:	pkgconfig(python)
 Conflicts:	lm_sensors < 3.0.0
 Requires:	udev
+Requires(post):	kmod
+%rename i2c-tools-eepromer
 
 %description
 This package contains a heterogeneous set of I2C tools for Linux: a bus
@@ -34,7 +36,7 @@ Group:		System/Kernel and hardware
 Requires:	%{libname} = %{EVRD}
 
 %description -n %{devname}
-Development files for the I2C library
+Development files for the I2C library.
 
 %package -n %{staticname}
 Summary:	Static library files for the I2C library
@@ -42,18 +44,7 @@ Group:		System/Kernel and hardware
 Requires:	%{devname} = %{EVRD}
 
 %description -n %{staticname}
-Static library files for the I2C library
-
-%package eepromer
-Summary:	Programs for reading/writing i2c/smbus eeproms
-Group:		System/Kernel and hardware
-Requires:	%{name} = %{version}-%{release}
-
-%description eepromer
-Programs for reading/writing i2c/smbus eeproms. Notice that writing the
-eeproms in your system is very dangerous and is likely to render your system
-unusable. Do not install, let alone use this, unless you really, _really_ know
-what you are doing.
+Static library files for the I2C library.
 
 %package -n python-smbus
 Summary:	Python module for SMBus access via I2C
@@ -75,59 +66,59 @@ interface support, and a bus adapter driver.
 
 %make_build PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir} CC=%{__cc}
 
-cd eepromer
-%make_build PREFIX=%{_prefix} libdir=%{_libdir} CFLAGS="%{optflags} -I../include" CC=%{__cc}
-cd ..
-
 cd py-smbus
 CFLAGS="%{optflags} -I../include" python setup.py build
 cd ..
 
 %install
 %make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
-cp -a eeprog/eeprog eepromer/eeprom eepromer/eepromer %{buildroot}%{_sbindir}
+
+# for i2c-dev ondemand loading through kmod
+mkdir -p %{buildroot}%{_modprobedir}
+echo "alias char-major-89-* i2c-dev" > \
+  %{buildroot}%{_modprobedir}/i2c-dev.conf
+# for /dev/i2c-# creation (which are needed for kmod i2c-dev autoloading)
+mkdir -p %{buildroot}%{_sysconfdir}/udev/makedev.d
+for (( i = 0 ; i < 8 ; i++ )) do
+  echo "i2c-$i" >> %{buildroot}%{_sysconfdir}/udev/makedev.d/99-i2c-dev.nodes
+done
+
+# auto-load i2c-dev after reboot
+mkdir -p %{buildroot}%{_modulesloaddir}
+echo 'i2c-dev' > %{buildroot}%{_modulesloaddir}/%{name}.conf
 
 cd py-smbus
 python setup.py install --root=%{buildroot} --compile --optimize=2
 cd ..
 
-%files
-%defattr(0644,root,root,0755)
-%doc CHANGES COPYING README
-%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-0
-%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-1
-%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-2
-%attr(660,root,root) %dev(c,89,0) /lib/udev/devices/i2c-3
-%exclude %{_sbindir}/eeprog
-%exclude %{_sbindir}/eeprom
-%exclude %{_sbindir}/eepromer
-%attr(0755,root,root) %{_bindir}/ddcmon
-%attr(0755,root,root) %{_bindir}/decode-dimms
-%attr(0755,root,root) %{_bindir}/decode-edid
-%attr(0755,root,root) %{_bindir}/decode-vaio
-%attr(0755,root,root) %{_sbindir}/i2cdetect
-%attr(0755,root,root) %{_sbindir}/i2cdump
-%attr(0755,root,root) %{_sbindir}/i2cget
-%attr(0755,root,root) %{_sbindir}/i2cset
-%attr(0755,root,root) %{_sbindir}/i2ctransfer
-%attr(0755,root,root) %{_sbindir}/i2c-stub-from-dump
-%{_mandir}/man1/decode-dimms.1.*
-%{_mandir}/man1/decode-vaio.1.*
-%{_mandir}/man3/libi2c.3.*
-%{_mandir}/man8/i2cdetect.8*
-%{_mandir}/man8/i2cdump.8*
-%{_mandir}/man8/i2cget.8*
-%{_mandir}/man8/i2cset.8*
-%{_mandir}/man8/i2ctransfer.8*
-%{_mandir}/man8/i2c-stub-from-dump.8*
+%post
+# load i2c-dev after the first install
+if [ "$1" = 1 ] ; then
+    /sbin/modprobe i2c-dev
+fi
+exit 0
 
-%files eepromer
-%defattr(0644,root,root,0755)
-%doc eepromer/README eepromer/README.eeprom eepromer/README.eepromer
-%attr(0755,root,root) %{_sbindir}/eeprog
-%attr(0755,root,root) %{_sbindir}/eeprom
-%attr(0755,root,root) %{_sbindir}/eepromer
-%{_mandir}/man8/eeprog.8*
+%files
+%doc CHANGES COPYING README
+%config(noreplace) %{_modprobedir}/i2c-dev.conf
+%config(noreplace) %{_sysconfdir}/udev/makedev.d/99-i2c-dev.nodes
+%{_modulesloaddir}/%{name}.conf
+%{_bindir}/ddcmon
+%{_bindir}/decode-dimms
+%{_bindir}/decode-edid
+%{_bindir}/decode-vaio
+%{_sbindir}/i2c*
+%{_sbindir}/eeprog
+%doc %{_mandir}/man1/decode-dimms.1.*
+%doc %{_mandir}/man1/decode-vaio.1.*
+%doc %{_mandir}/man3/libi2c.3.*
+%doc %{_mandir}/man8/eeprog.8*
+%doc %{_mandir}/man8/i2cdetect.8*
+%doc %{_mandir}/man8/i2cdump.8*
+%doc %{_mandir}/man8/i2cget.8*
+%doc %{_mandir}/man8/i2cset.8*
+%doc %{_mandir}/man8/i2ctransfer.8*
+%doc %{_mandir}/man8/i2c-stub-from-dump.8*
 
 %files -n python-smbus
 %defattr(0644,root,root,0755)
