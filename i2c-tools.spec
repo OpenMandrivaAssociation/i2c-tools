@@ -7,7 +7,7 @@
 Summary:	Heterogeneous set of I2C tools for Linux
 Name:		i2c-tools
 Version:	4.3
-Release:	1
+Release:	2
 Group:		System/Kernel and hardware
 License:	GPL
 URL:		http://www.lm-sensors.org/wiki/I2CTools
@@ -64,14 +64,14 @@ interface support, and a bus adapter driver.
 %build
 %set_build_flags
 
-%make_build PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir} CC=%{__cc}
+%make_build PREFIX=%{_prefix} EXTRA=eeprog libdir=%{_libdir} CC=%{__cc} sbindir=%{_sbindir}
 
 cd py-smbus
 CFLAGS="%{optflags} -I../include" python setup.py build
 cd ..
 
 %install
-%make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog
+%make_install PREFIX=%{_prefix} libdir=%{_libdir} EXTRA=eeprog sbindir=%{_sbindir}
 
 # for i2c-dev ondemand loading through kmod
 mkdir -p %{buildroot}%{_modprobedir}
@@ -94,7 +94,7 @@ cd ..
 %post
 # load i2c-dev after the first install
 if [ "$1" = 1 ] ; then
-    /sbin/modprobe i2c-dev
+    %{_sbindir}/modprobe i2c-dev
 fi
 exit 0
 
@@ -103,12 +103,7 @@ exit 0
 %config(noreplace) %{_modprobedir}/i2c-dev.conf
 %config(noreplace) %{_sysconfdir}/udev/makedev.d/99-i2c-dev.nodes
 %{_modulesloaddir}/%{name}.conf
-%{_bindir}/ddcmon
-%{_bindir}/decode-dimms
-%{_bindir}/decode-edid
-%{_bindir}/decode-vaio
-%{_sbindir}/i2c*
-%{_sbindir}/eeprog
+%{_bindir}/*
 %doc %{_mandir}/man1/decode-dimms.1.*
 %doc %{_mandir}/man1/decode-vaio.1.*
 %doc %{_mandir}/man3/libi2c.3.*
