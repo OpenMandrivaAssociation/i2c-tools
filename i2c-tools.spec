@@ -6,8 +6,8 @@
 
 Summary:	Heterogeneous set of I2C tools for Linux
 Name:		i2c-tools
-Version:	4.3
-Release:	3
+Version:	4.4
+Release:	1
 Group:		System/Kernel and hardware
 License:	GPL
 URL:		http://www.lm-sensors.org/wiki/I2CTools
